@@ -129,7 +129,6 @@ def parse_tweets_from_dir(input_dir, output_dir=None, label=True, aggregation=10
     input_dir
     '''
     # vars
-    print(input_dir)
     Authors = []
     t0 = time()
     n_files = 0
@@ -258,5 +257,4 @@ def parse_tweets_from_dir(input_dir, output_dir=None, label=True, aggregation=10
     if verbosity_level:
         print("Tweets available : " +
               str(sum([len(a["tweets"]) for a in Authors])) + "\n")
-    print('fin parse tweet 2')
     return Authors

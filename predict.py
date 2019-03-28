@@ -27,7 +27,6 @@ from sklearn.metrics import confusion_matrix, f1_score
 from sklearn.model_selection import KFold
 
 options = {
-    'dataset_path': "/Users/regisgoubin/Documents/projet_specifique/PAN2018-AP-Train/pan19-author-profiling-training-2019-01-28",
     'text_clf_path_tfidf': "./output_txt_train/tfidf",
     'text_clf_path_label': './output_txt_train/label',
     'text_clf_path_meta': './output_txt_train/meta',
@@ -70,7 +69,7 @@ def save_xmls(output_path, lang, predictions_dict):
             author['type'] = 'human'
         author['gender'] = predictions_dict[prediction]
         save_author_file(
-            author=author, output_dir=output_path + '/', verbose=1)
+            author=author, output_dir=output_path + '/', verbose=0)
 
 
 def predict(input_path,  output_path, verbosity_level=1):
@@ -219,5 +218,16 @@ def predict(input_path,  output_path, verbosity_level=1):
 
 
 if __name__ == "__main__":
-    predict(input_path=options['dataset_path'],
-            output_path="../xml", verbosity_level=1)
+
+    import argparse
+
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument("-i", help="Path to the whole dataset")
+    parser.add_argument(
+        "-o", help="Path to save the result of the prediction as xml files")
+
+    args = parser.parse_args()
+
+    predict(input_path=args.i,
+            output_path=args.o, verbosity_level=0)
