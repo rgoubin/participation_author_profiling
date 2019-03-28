@@ -43,7 +43,10 @@ class POS_taging:
             global_counts[tag] = global_counts.get(tag,0) + counts.get(tag,0)
             sum_tagged_words = sum_tagged_words + counts.get(tag,0)
         for tag in global_counts:
-            global_counts[tag] = global_counts.get(tag,0)/sum_tagged_words
+            if sum_tagged_words == 0:
+                global_counts[tag] = 0
+            else :
+                global_counts[tag] = global_counts.get(tag,0)/sum_tagged_words
 
         # global_counts change to features
         features = []

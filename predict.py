@@ -30,6 +30,7 @@ options = {
     'text_clf_path_tfidf': "./output_txt_train/tfidf",
     'text_clf_path_label': './output_txt_train/label',
     'text_clf_path_meta': './output_txt_train/meta',
+    'text_clf_path_bot': './output_txt_train/bot',
 }
 
 
@@ -119,7 +120,7 @@ def predict(input_path,  output_path, verbosity_level=1):
 
         print('Get bot classifier')
         clf_bot = None
-        with open(options['text_clf_path_label'] + '/' + lang + '/bot-classifier.p', "rb") as input_file:
+        with open(options['text_clf_path_bot'] + '/' + lang + '/bot-classifier.p', "rb") as input_file:
             clf_bot = pickle.load(input_file)
 
         print('--------------- feature extractor ------------------')
@@ -135,18 +136,20 @@ def predict(input_path,  output_path, verbosity_level=1):
         print('--------------- feature extracted ------------------')
         bot_predictions_label = dict()
 
-        print('--------------- construction of features for the meta classifier ------------------')
+        print('--------------- construction of features for the bot classifier ------------------')
+        i = 0
         for author in Bots:
-            prediction_author = clf_bot.predict_proba([bot_features_test])
+            prediction_author = clf_bot.predict_proba([bot_features_test[i]])
 
-            if prediction_author[0][0] >= 0.5:
+            if prediction_author[0][1] >= 0.5:
                 # predictions_dict[author['id']] = 'human'
                 Humans.append(author)
             else:
                 predictions_dict[author['id']] = 'bot'
             i = i + 1
 
-        save_xmls(output_path + '/' + lang, lang, predictions_dict)
+        print("--------------- bot prediction done ---------------")
+        #save_xmls(output_path + '/' + lang, lang, predictions_dict)
 
 
         # -----------------------------------------------------
@@ -214,6 +217,9 @@ def predict(input_path,  output_path, verbosity_level=1):
                 predictions_dict[author['id']] = 'male'
             i = i + 1
 
+        print('--------------- meta classifier predictions done ------------------')
+
+        print('--------------- saving ------------------')
         save_xmls(output_path + '/' + lang, lang, predictions_dict)
 
 
