@@ -12,7 +12,11 @@ class POS_taging:
     '''
 
     def __init__(self):
-
+        self.possible_tags = ['CC','CD', 'DT', 'EX', 'FW', 'IN', 'JJ', 'JJR', 'JJS',
+         'LS', 'MD', 'NN', 'NNP', 'NNPS', 'NNS', 'PDT', 'POS', 'PRP', 'PRP$', 'RB',
+         'RBR', 'RBS', 'RP', 'SYM', 'TO', 'UH', 'VB', 'VBD', 'VBG', 'VBN', 'VBP',
+         'VBZ', 'WDT', 'WP', 'WP$', 'WRB',
+         '.', ',', ':', '$', '\'\'', '(', ')', '#', '``']
 
         ''' text (list(list(str) => should look like str[]
         word_tokenize() might be needed => no need because tweet tokenizer
@@ -27,14 +31,25 @@ class POS_taging:
             # return [' '.join(grams) for grams in n_grams ]
     def get_tag_frequency(self, tagged_text):
         global_counts = {} # initialize dict
+        for tag in self.possible_tags:
+            global_counts[tag] = 0
+
         sum_tagged_words = 0;
         counts = Counter(tag for word, tag in tagged_text) # get tag in a sentence
         for tag in counts:
+            test = global_counts.get(tag,'error')
+            if test == 'error':
+                print('tag :' + tag + 'not in dict')
             global_counts[tag] = global_counts.get(tag,0) + counts.get(tag,0)
             sum_tagged_words = sum_tagged_words + counts.get(tag,0)
         for tag in global_counts:
             global_counts[tag] = global_counts.get(tag,0)/sum_tagged_words
-        return global_counts
+
+        # global_counts change to features
+        features = []
+        for tag in global_counts:
+            features.append(global_counts.get(tag,0))
+        return features
 
     '''def get_tag_proportion(self):
         return 0'''
@@ -45,7 +60,7 @@ class POS_taging:
 
         for tweet in author['tweets']:
             tagged_text.extend(self.get_tag_from_text(tweet))
-        features.append(self.get_tag_frequency(tagged_text))
+        features.extend(self.get_tag_frequency(tagged_text))
         return features
 
     def analyzer(self, text):
