@@ -109,11 +109,45 @@ def predict(input_path,  output_path, verbosity_level=1):
         Bots = []
         Humans = []
         # TO DELETE
-        Humans = Authors
+        # Humans = Authors
+
+        Bots = Authors
 
         # -----------------------------------------------------
         # ------ DETERMINING IF USERS ARE BOTS OR HUMANS ------
         # -----------------------------------------------------
+
+        print('Get bot classifier')
+        clf_bot = None
+        with open(options['text_clf_path_label'] + '/' + lang + '/bot-classifier.p', "rb") as input_file:
+            clf_bot = pickle.load(input_file)
+
+        print('--------------- feature extractor ------------------')
+        bot_features_test = generic.all_generic_bot_features(Bots)
+
+        '''specific_features_test = []
+        if lang == 'en':
+            specific_features_test = specific_en.get_all_specific_features(
+                Bots)
+        if lang == 'es':
+            specific_features_test = specific_es.get_all_specific_features(
+                Bots)'''
+        print('--------------- feature extracted ------------------')
+        bot_predictions_label = dict()
+
+        print('--------------- construction of features for the meta classifier ------------------')
+        for author in Bots:
+            prediction_author = clf_bot.predict_proba([bot_features_test])
+
+            if prediction_author[0][0] >= 0.5:
+                # predictions_dict[author['id']] = 'human'
+                Humans.append(author)
+            else:
+                predictions_dict[author['id']] = 'bot'
+            i = i + 1
+
+        save_xmls(output_path + '/' + lang, lang, predictions_dict)
+
 
         # -----------------------------------------------------
         # --- DETERMINING IF THE HUMANS ARE FEMALE OR MALE ----
