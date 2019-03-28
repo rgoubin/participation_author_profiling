@@ -95,6 +95,7 @@ class clean_en_txt:
 
     def tokenize(self, text):
         stemmer = SStemmer()
+
         text = self.remove_punctuations(text)
         text = self.delete_hashtag(text)
 
@@ -115,5 +116,5 @@ class clean_en_txt:
                 stemmed_tokens.append(stemmer.stem(token))'''
             if token.lower() not in clean_en_txt.stopwords_list:
                 stemmed_tokens.append(stemmer.stem(token.lower()))
-        return tokens
+        return stemmed_tokens
         # return [stemmer.stem(x) for x in text.split() if stemmer.stem(x) not in clean_en_txt.stopwords_list]

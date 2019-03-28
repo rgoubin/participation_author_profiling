@@ -50,5 +50,9 @@ class clean_es_txt:
         text = self.remove_repeating_char(text)
         tokenizer = TweetTokenizer()
         tokens = tokenizer.tokenize(text)
-        return tokens
+        filtered_tokens = []
+        for token in tokens:
+            if token not in clean_es_txt.stopwords_list:
+                filtered_tokens.append(token)
+        return filtered_tokens
         # return text.split()

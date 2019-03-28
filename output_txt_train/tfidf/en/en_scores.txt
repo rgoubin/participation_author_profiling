@@ -2,6 +2,6 @@
 --- Results of the training ---
 -------------------------------
 
-average micro f-score: 0.829666666667
-average macro f-score: 0.829489199533
-model f-score: 0.84962406015
+average micro f-score: 0.826666666667
+average macro f-score: 0.826368553347
+model f-score: 0.8433176651
