@@ -19,7 +19,6 @@ def classify_authors(Authors, classifiers, outputDic, classification_type='loose
     i = 0
     for auth in Authors:
         i = i + 1
-        print(str(i) + '/' + str(len(Authors)))
         # classify gender
         gdr_classes, gdr_predictions = predict_author_proba(
             author=auth,
