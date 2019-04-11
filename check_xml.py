@@ -34,6 +34,8 @@ def check_xml():
         number_of_bots = 0
         number_of_humans = 0
         number_of_good_gender_predictions = 0
+        number_of_good_gender_predictions_bot = 0
+        number_of_good_gender_predictions_human = 0
         number_of_good_type_prediction = 0
         dict_language = parse_gender_dict(
             dataset_path + '/' + lang + '/truth.txt')
@@ -51,8 +53,10 @@ def check_xml():
                 number_of_bots = number_of_bots + 1
                 if root.attrib['type'] == 'bot':
                     number_of_good_type_prediction = number_of_good_type_prediction + 1
+                    number_of_good_gender_predictions_bot = number_of_good_gender_predictions_bot + 1
                 if root.attrib['gender'] == 'bot':
                     number_of_good_gender_predictions = number_of_good_gender_predictions + 1
+                    number_of_good_gender_predictions_human = number_of_good_gender_predictions_human + 1
 
             if dict_language[root.attrib['id']] == 'female':
                 number_of_humans = number_of_humans + 1
@@ -73,6 +77,10 @@ def check_xml():
         print('bool_coherence: ' + str(bool_coherence))
         print('number_of_good_type_prediction: ' +
               str(number_of_good_type_prediction))
+        print('number_of_good_type_prediction_bot: ' +
+              str(number_of_good_gender_predictions_bot))
+        print('number_of_good_type_prediction: ' +
+              str(number_of_good_gender_predictions_human))
         print('number_of_good_gender_predictions: ' +
               str(number_of_good_gender_predictions))
         print('number_of_bots: ' + str(number_of_bots))
