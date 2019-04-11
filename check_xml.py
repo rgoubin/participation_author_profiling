@@ -56,12 +56,12 @@ def check_xml():
                     number_of_good_gender_predictions_bot = number_of_good_gender_predictions_bot + 1
                 if root.attrib['gender'] == 'bot':
                     number_of_good_gender_predictions = number_of_good_gender_predictions + 1
-                    number_of_good_gender_predictions_human = number_of_good_gender_predictions_human + 1
 
             if dict_language[root.attrib['id']] == 'female':
                 number_of_humans = number_of_humans + 1
                 if root.attrib['type'] == 'human':
                     number_of_good_type_prediction = number_of_good_type_prediction + 1
+                    number_of_good_gender_predictions_human = number_of_good_gender_predictions_human + 1
                 if root.attrib['gender'] == 'female':
                     number_of_good_gender_predictions = number_of_good_gender_predictions + 1
 
@@ -69,6 +69,7 @@ def check_xml():
                 number_of_humans = number_of_humans + 1
                 if root.attrib['type'] == 'human':
                     number_of_good_type_prediction = number_of_good_type_prediction + 1
+                    number_of_good_gender_predictions_human = number_of_good_gender_predictions_human + 1
                 if root.attrib['gender'] == 'male':
                     number_of_good_gender_predictions = number_of_good_gender_predictions + 1
 
