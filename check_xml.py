@@ -79,7 +79,7 @@ def check_xml():
               str(number_of_good_type_prediction))
         print('number_of_good_type_prediction_bot: ' +
               str(number_of_good_gender_predictions_bot))
-        print('number_of_good_type_prediction: ' +
+        print('number_of_good_type_prediction_human: ' +
               str(number_of_good_gender_predictions_human))
         print('number_of_good_gender_predictions: ' +
               str(number_of_good_gender_predictions))
