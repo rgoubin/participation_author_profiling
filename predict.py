@@ -4,9 +4,10 @@ from pickle import load
 from time import time
 from numpy import array
 from shutil import rmtree
+import operator
 import re
 import pickle
-
+import numpy as np
 from giovanniScripts.dataset_parser import parse_tweets_from_dir
 from utils import abort_clean
 
@@ -31,6 +32,7 @@ options = {
     'text_clf_path_label': './output_txt_train/label',
     'text_clf_path_meta': './output_txt_train/meta',
     'text_clf_path_bot': './output_txt_train/bot',
+    'text_clf_path_user2vec': './output_txt_train/user2vec'
 }
 
 
@@ -87,7 +89,8 @@ def predict(input_path,  output_path, verbosity_level=1):
         NB. Create outputPath directory before using this function
     '''
 
-    for lang in ['en', 'es']:
+    # for lang in ['en', 'es']:
+    for lang in ['es']:
 
         input_dir = join(input_path, lang)
         output_dir = join(output_path, lang)
@@ -151,18 +154,50 @@ def predict(input_path,  output_path, verbosity_level=1):
         print("--------------- bot prediction done ---------------")
         #save_xmls(output_path + '/' + lang, lang, predictions_dict)
 
-
         # -----------------------------------------------------
         # --- DETERMINING IF THE HUMANS ARE FEMALE OR MALE ----
         # -----------------------------------------------------
 
-        print('Get classifiers label and meta')
+        print('Get classifiers label, meta and user2vec')
         clf_label = None
         clf_meta = None
+        clf_user2vec = None
+        word2vec_model = None
         with open(options['text_clf_path_label'] + '/' + lang + '/label-classifier.p', "rb") as input_file:
             clf_label = pickle.load(input_file)
         with open(options['text_clf_path_meta'] + '/' + lang + '/meta-classifier.p', "rb") as input_file:
             clf_meta = pickle.load(input_file)
+        with open(options['text_clf_path_user2vec'] + '/' + lang + '/user2vec-classifier.p', "rb") as input_file:
+            clf_user2vec = pickle.load(input_file)
+
+        prediction_user2vec = dict()
+        if lang == 'en':
+
+            print('Load user2vec model')
+            ############################################################
+            # ALAA : Load model into word2vec_model
+            ############################################################
+            print('Model loaded')
+
+            i = 0
+            for author in Humans:
+                print("user2vec: " + str(i) + '/' + str(len(Humans)))
+                current_user_vectors = []
+                ######################################
+                # ALAA : Compute for each tweet of one user and add vectors into current_user_vectors
+                ######################################
+
+                if len(current_user_vectors) == 0:
+                    prediction_user2vec[author['id']] = [0.5, 0.5]
+                else:
+                    final_vector = [0]*300
+                    for current_vector in current_user_vectors:
+                        final_vector = list(
+                            map(operator.add, final_vector, current_vector))
+                    final_vector = np.true_divide(
+                        final_vector, len(current_user_vectors))
+                    prediction_user2vec[author['id']] = clf_user2vec.predict_proba([final_vector])[
+                        0]
 
         import text_prediction
         predictions_test_tfidf = text_prediction.predict(
@@ -195,6 +230,9 @@ def predict(input_path,  output_path, verbosity_level=1):
             toAppend.append(predictions_test_tfidf[author['id']][1])
             toAppend.append(prediction_author[0][0])
             toAppend.append(prediction_author[0][1])
+            if lang == 'en':
+                toAppend.append(prediction_user2vec[author['id']][0])
+                toAppend.append(prediction_user2vec[author['id']][1])
 
             X_test[author['id']] = toAppend
         X_test_casted = dict()
