@@ -27,8 +27,8 @@ from sklearn.base import clone
 from sklearn.metrics import confusion_matrix, f1_score
 from sklearn.model_selection import KFold
 
-from giovanniScripts import  clean_en_txt_word2vec , clean_es_txt  #Alaa : for tweet2vec
-from tweet2vec import  load_vectors, tweet2vec
+from giovanniScripts import clean_en_txt_word2vec, clean_es_txt  # Alaa : for tweet2vec
+from tweet2vec import load_vectors, tweet2vec
 
 
 options = {
@@ -93,8 +93,8 @@ def predict(input_path,  output_path, verbosity_level=1):
         NB. Create outputPath directory before using this function
     '''
 
-    # for lang in ['en', 'es']:
-    for lang in ['es']:
+    for lang in ['en', 'es']:
+        # for lang in ['es']:
 
         input_dir = join(input_path, lang)
         output_dir = join(output_path, lang)
@@ -180,21 +180,19 @@ def predict(input_path,  output_path, verbosity_level=1):
             print('Load user2vec model')
             ############################################################
             # ALAA : Load model into word2vec_model
-            
-            
-            ### load fastText word vectors
+
+            # load fastText word vectors
             # --------------------------------
 
-            word2vec_fname = "Data/cc.en.300.vec"  # modify the directory
+            word2vec_fname = "/home/goubin19/cc.en.300.vec"  # modify the directory
             words_vectors_data = load_vectors(word2vec_fname)
             ############################################################
             print('Model loaded')
 
-         
-            ##Compute tweet2vec     
+            # Compute tweet2vec
             i = 0
-            global_words_count=0
-            global_found_words=0
+            global_words_count = 0
+            global_found_words = 0
 
             for author in Humans:
                 print("user2vec: " + str(i) + '/' + str(len(Humans)))
@@ -205,31 +203,30 @@ def predict(input_path,  output_path, verbosity_level=1):
                 for tweet in author['tweets']:
                    # clean the tweet
                     if (lang == "en"):
-                            clean_tweet_tokens = clean_en_txt_word2vec().tokenize(tweet)
+                        clean_tweet_tokens = clean_en_txt_word2vec().tokenize(tweet)
                     elif (lang == "es"):
-                            clean_tweet_tokens = clean_es_txt().tokenize(tweet)
+                        clean_tweet_tokens = clean_es_txt().tokenize(tweet)
                     else:
-                            print("language", lang, "has not been initialized yet")
+                        print("language", lang, "has not been initialized yet")
 
-                    ### if weighted tweet2vec:
+                    # if weighted tweet2vec:
                     # author_word_tfIdf = user_word_tfIdf(x, authors)
                     # tweet_vector, words_count, vectorized_words_count = tfIdf_weighted_tweet2vec(words_vectors_data,
-                        #                                                                             clean_tweet_tokens,
-                        #                                                                            author_word_tfIdf)
+                    #                                                                             clean_tweet_tokens,
+                    #                                                                            author_word_tfIdf)
 
                     # else
                     tweet_vector, words_count, vectorized_words_count = tweet2vec(words_vectors_data,
-                                                                                      clean_tweet_tokens)
+                                                                                  clean_tweet_tokens)
 
                     #print("tweet vector:", tweet_vector)
-                    #exclude zero vectors:
-                    if(np.count_nonzero(tweet_vector) != 0 ):   
+                    # exclude zero vectors:
+                    if(np.count_nonzero(tweet_vector) != 0):
 
-                          current_user_vectors.append(tweet_vector)
+                        current_user_vectors.append(tweet_vector)
 
                     global_found_words += vectorized_words_count
                     global_words_count += words_count
-
 
                     #print("curr global_words_count", global_words_count)
 
