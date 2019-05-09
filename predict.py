@@ -27,7 +27,7 @@ from sklearn.base import clone
 from sklearn.metrics import confusion_matrix, f1_score
 from sklearn.model_selection import KFold
 
-from giovanniScripts import  clean_en_txt, clean_es_txt  #Alaa : for tweet2vec
+from giovanniScripts import  clean_en_txt_word2vec , clean_es_txt  #Alaa : for tweet2vec
 from tweet2vec import  load_vectors, tweet2vec
 
 
@@ -205,7 +205,7 @@ def predict(input_path,  output_path, verbosity_level=1):
                 for tweet in author['tweets']:
                    # clean the tweet
                     if (lang == "en"):
-                            clean_tweet_tokens = clean_en_txt().tokenize(tweet)
+                            clean_tweet_tokens = clean_en_txt_word2vec().tokenize(tweet)
                     elif (lang == "es"):
                             clean_tweet_tokens = clean_es_txt().tokenize(tweet)
                     else:
