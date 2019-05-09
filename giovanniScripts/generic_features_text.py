@@ -419,3 +419,24 @@ def all_generic_features_csv(Authors):
         features.append(features_user)
 
     return features
+
+
+def all_generic_bot_features(Authors):
+    import giovanniScripts.pos_tag_features as pos_tag_features
+    features = []
+    pos_tag = pos_tag_features.POS_taging()
+
+    for author in Authors:
+        features_user = []
+
+        emoticon_ratio_feature = emoticon_ratio(author)
+        pos_tag_all_features = pos_tag.pos_tag_all_features(author)  # list
+        aggregated_word_count_and_entropy = word_all_features(author)  # list
+
+        features_user.append(emoticon_ratio_feature)
+        features_user.extend(pos_tag_all_features)
+        features_user.extend(aggregated_word_count_and_entropy)
+
+        features.append(features_user)
+
+    return features
