@@ -176,6 +176,13 @@ def predict(input_path,  output_path, verbosity_level=1):
             print('Load user2vec model')
             ############################################################
             # ALAA : Load model into word2vec_model
+            
+            
+            ### load fastText word vectors
+            # --------------------------------
+
+            word2vec_fname = "Data/cc.en.300.vec"  # modify the directory
+            words_vectors_data = load_vectors(word2vec_fname)
             ############################################################
             print('Model loaded')
 
