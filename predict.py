@@ -222,8 +222,10 @@ def predict(input_path,  output_path, verbosity_level=1):
                                                                                       clean_tweet_tokens)
 
                     #print("tweet vector:", tweet_vector)
+                    #exclude zero vectors:
+                    if(np.count_nonzero(tweet_vector) != 0 ):   
 
-                    current_user_vectors.append(tweet_vector)
+                          current_user_vectors.append(tweet_vector)
 
                     global_found_words += vectorized_words_count
                     global_words_count += words_count
