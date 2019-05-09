@@ -32,6 +32,9 @@ def test(options):
     with open(options['user2vec_path'], 'rb') as user2vec_file:
         user_vectors = pickle.load(user2vec_file)
 
+    with open('./output_txt_train/user2vec/user2vec-classifier.p', "rb") as input_file:
+        clf_user2vec = pickle.load(input_file)
+
     gender_dict_test = parse_gender_dict_2019(
         options['dataset_path'] + '/truth.txt')
 
@@ -57,25 +60,12 @@ def test(options):
     from sklearn.svm import LinearSVC
     from sklearn.calibration import CalibratedClassifierCV
 
-    svm = LinearSVC(random_state=0)
-    clf = CalibratedClassifierCV(svm)
-
-    print("Training on " + str(len(X)) + " users")
-
-    clf.fit(X, y)
-
     print("Testing on " + str(len(X_test)) + " users")
 
-    score = clf.score(X_test, y_test)
+    score = clf_user2vec.score(X_test, y_test)
 
     print("score :")
     print(score)
-
-    if exists('./output_txt_train/user2vec' + '/' + options['languages']):
-        rmtree('./output_txt_train/user2vec' + '/' + options['languages'])
-    makedirs('./output_txt_train/user2vec' + '/' + options['languages'])
-    pickle.dump(clf, open('./output_txt_train/user2vec' + '/' +
-                          options['languages'] + '/user2vec-classifier.p', "wb"))
 
 
 def predict(dict_users, clf_path, csv_file):
