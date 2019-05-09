@@ -32,7 +32,7 @@ def test(options):
     with open(options['user2vec_path'], 'rb') as user2vec_file:
         user_vectors = pickle.load(user2vec_file)
 
-    with open('./output_txt_train/user2vec/user2vec-classifier.p', "rb") as input_file:
+    with open('./output_txt_train/user2vec/' + options['languages'] + '/user2vec-classifier.p', "rb") as input_file:
         clf_user2vec = pickle.load(input_file)
 
     gender_dict_test = parse_gender_dict_2019(
