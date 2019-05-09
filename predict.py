@@ -27,6 +27,10 @@ from sklearn.base import clone
 from sklearn.metrics import confusion_matrix, f1_score
 from sklearn.model_selection import KFold
 
+from giovanniScripts import  clean_en_txt, clean_es_txt  #Alaa : for tweet2vec
+from tweet2vec import  load_vectors, tweet2vec
+
+
 options = {
     'text_clf_path_tfidf': "./output_txt_train/tfidf",
     'text_clf_path_label': './output_txt_train/label',
@@ -186,12 +190,53 @@ def predict(input_path,  output_path, verbosity_level=1):
             ############################################################
             print('Model loaded')
 
+         
+            ##Compute tweet2vec     
             i = 0
+            global_words_count=0
+            global_found_words=0
+
             for author in Humans:
                 print("user2vec: " + str(i) + '/' + str(len(Humans)))
                 current_user_vectors = []
+
                 ######################################
                 # ALAA : Compute for each tweet of one user and add vectors into current_user_vectors
+                for tweet in author['tweets']:
+                   # clean the tweet
+                    if (lang == "en"):
+                            clean_tweet_tokens = clean_en_txt().tokenize(tweet)
+                    elif (lang == "es"):
+                            clean_tweet_tokens = clean_es_txt().tokenize(tweet)
+                    else:
+                            print("language", lang, "has not been initialized yet")
+
+                    ### if weighted tweet2vec:
+                    # author_word_tfIdf = user_word_tfIdf(x, authors)
+                    # tweet_vector, words_count, vectorized_words_count = tfIdf_weighted_tweet2vec(words_vectors_data,
+                        #                                                                             clean_tweet_tokens,
+                        #                                                                            author_word_tfIdf)
+
+                    # else
+                    tweet_vector, words_count, vectorized_words_count = tweet2vec(words_vectors_data,
+                                                                                      clean_tweet_tokens)
+
+                    #print("tweet vector:", tweet_vector)
+
+                    current_user_vectors.append(tweet_vector)
+
+                    global_found_words += vectorized_words_count
+                    global_words_count += words_count
+
+
+                    #print("curr global_words_count", global_words_count)
+
+                    #print("curr global_found_words", global_found_words)
+
+                ratio = (float(global_found_words)) / global_words_count
+                #print("global ratio of founded words is", ratio)
+
+                ######################################
                 ######################################
 
                 if len(current_user_vectors) == 0:
