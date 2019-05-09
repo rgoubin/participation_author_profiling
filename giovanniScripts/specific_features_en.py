@@ -122,3 +122,32 @@ def get_all_specific_features(Authors):
         features.append(features_user)
 
     return features
+
+
+def get_all_specific_features_label(Authors):
+    features = []
+    for author in Authors:
+        features_user = []
+        emoji = 0
+        first_person = 0
+        pronouns = 0
+        negations = 0
+        for tweet in author['tweets']:
+            current_preprocessed_tweet = clean_en.tokenize(tweet)
+            emoji = emoji + emojis.count(tweet)
+            '''emoji = emoji + 
+                len(re.findall(u'[\U0001f600-\U0001f650]',
+                               tweet))'''
+            first_person = first_person + \
+                current_preprocessed_tweet.count('<first_person>')
+            pronouns = pronouns + current_preprocessed_tweet.count('<pronoun>')
+            negations = negations + \
+                current_preprocessed_tweet.count('<negation>')
+
+        '''features_user.append(emoji)
+        features_user.append(first_person)
+        features_user.append(pronouns)'''
+        features_user.append(negations)
+        features.append(features_user)
+
+    return features

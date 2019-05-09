@@ -3,6 +3,7 @@ import statistics as stats
 from nltk.tokenize import TweetTokenizer
 from nltk import FreqDist
 from math import log2
+import emojis
 # Add the features directly into the dictionary
 
 
@@ -152,7 +153,7 @@ def emoticon_ratio(author):
     tweet_having_emoticon = 0
     emoticon_number = 0
     for tweet in author['tweets']:
-        emoticon_number = len(re.findall(u'[\U0001f600-\U0001f650]', tweet))
+        emoticon_number = emojis.count(tweet)
         if emoticon_number > 0:
             tweet_having_emoticon += 1
     return tweet_having_emoticon/len(author['tweets'])
@@ -290,24 +291,131 @@ def all_generic_features(Authors):
 
     return features
 
-def all_generic_bot_features(Authors):
-    import giovanniScripts.pos_tag_features as pos_tag_features
+
+def all_generic_features_label(Authors):
+    url_re = re.compile(u'https?:\/\/[^\s-]*', re.UNICODE)
+
+    # https://gist.github.com/mahmoud/237eb20108b5805aed5f
+    hashtag_re = re.compile("(?:^|\s)[##]{1}(\w+)", re.UNICODE)
+
+    # https://gist.github.com/mahmoud/237eb20108b5805aed5f
+    mention_re = re.compile(
+        "(?:^|\s)[@@]{1}([^\s#<>[\]|{}]+)", re.UNICODE)
+
+    upper_re = re.compile(r'[A-Z]')
+    lower_re = re.compile(r'[a-z]')
+
     features = []
-    pos_tag = pos_tag_features.POS_taging()
 
     for author in Authors:
         features_user = []
-
+        number_of_words = 0
+        tweet_length = 0
+        urls = 0
+        hashtags = 0
+        user_mentions = 0
+        uppercases = 0
+        lowercases = 0
+        list_length = []
         emoticon_ratio_feature = emoticon_ratio(author)
-        pos_tag_all_features = pos_tag.pos_tag_all_features(author) # list
         aggregated_word_count_and_entropy = word_all_features(author)  # list
 
+        for tweet in author['tweets']:
+            number_of_words = number_of_words + len(tweet.split())
+            tweet_length = tweet_length + len(tweet)
+            list_length.append(len(tweet))
+
+            list_url = url_re.findall(tweet)
+            urls = urls + len(list_url)
+
+            list_hashtags = hashtag_re.findall(tweet)
+            hashtags = hashtags + len(list_hashtags)
+
+            list_mentions = mention_re.findall(tweet)
+            user_mentions = user_mentions + len(list_mentions)
+
+            uppercases = uppercases + len(upper_re.findall(tweet))
+            lowercases = lowercases + len(lower_re.findall(tweet))
+
+        # print(len(author['tweets']))
+        features_user.append(number_of_words/100)
+        # features_user.append(tweet_length/100)
+        features_user.append(stats.stdev(list_length))
+        # features_user.append(emoticon_ratio_feature)
+        features_user.append(urls)
+        # features_user.append(hashtags)
+        features_user.append(user_mentions)
+        if (uppercases + lowercases) == 0:
+            features_user.append(0)
+        else:
+            features_user.append(uppercases/(uppercases + lowercases))
+        # don't use append
+        # features_user.extend(aggregated_word_count_and_entropy)
+        features_user.append(aggregated_word_count_and_entropy[0])
+        features.append(features_user)
+
+    return features
+
+
+def all_generic_features_csv(Authors):
+    url_re = re.compile(u'https?:\/\/[^\s-]*', re.UNICODE)
+
+    # https://gist.github.com/mahmoud/237eb20108b5805aed5f
+    hashtag_re = re.compile("(?:^|\s)[##]{1}(\w+)", re.UNICODE)
+
+    # https://gist.github.com/mahmoud/237eb20108b5805aed5f
+    mention_re = re.compile(
+        "(?:^|\s)[@@]{1}([^\s#<>[\]|{}]+)", re.UNICODE)
+
+    upper_re = re.compile(r'[A-Z]')
+    lower_re = re.compile(r'[a-z]')
+
+    features = []
+
+    for author in Authors:
+        features_user = []
+        number_of_words = 0
+        tweet_length = 0
+        urls = 0
+        hashtags = 0
+        user_mentions = 0
+        uppercases = 0
+        lowercases = 0
+        list_length = []
+        emoticon_ratio_feature = emoticon_ratio(author)
+        aggregated_word_count_and_entropy = word_all_features(author)  # list
+
+        for tweet in author['tweets']:
+            number_of_words = number_of_words + len(tweet.split())
+            tweet_length = tweet_length + len(tweet)
+            list_length.append(len(tweet))
+
+            list_url = url_re.findall(tweet)
+            urls = urls + len(list_url)
+
+            list_hashtags = hashtag_re.findall(tweet)
+            hashtags = hashtags + len(list_hashtags)
+
+            list_mentions = mention_re.findall(tweet)
+            user_mentions = user_mentions + len(list_mentions)
+
+            uppercases = uppercases + len(upper_re.findall(tweet))
+            lowercases = lowercases + len(lower_re.findall(tweet))
+
+        # print(len(author['tweets']))
+        features_user.append(number_of_words/100)
+        features_user.append(tweet_length/100)
+        features_user.append(stats.stdev(list_length))
         features_user.append(emoticon_ratio_feature)
-        features_user.extend(pos_tag_all_features)
+        features_user.append(urls)
+        features_user.append(hashtags)
+        features_user.append(user_mentions)
+        if (uppercases + lowercases) == 0:
+            features_user.append(0)
+        else:
+            features_user.append(uppercases/(uppercases + lowercases))
+        # don't use append
         features_user.extend(aggregated_word_count_and_entropy)
-
-
-
         features.append(features_user)
 
     return features
