@@ -2,7 +2,7 @@
 import re
 import string
 from nltk.corpus import stopwords
-from sstemmer_copy import SStemmer
+from giovanniScripts.sstemmer_copy import SStemmer
 from nltk.tokenize import TweetTokenizer
 #import emojis
 
@@ -49,14 +49,15 @@ class clean_en_txt:
 
     def remove_punctuations(self, text):
         #print (text)
-        return re.sub(r'[^\w\s]', '',text)
-        #return text.translate( string.punctuation) #####ALAA
+        return re.sub(r'[^\w\s]', '', text)
+        # return text.translate( string.punctuation) #####ALAA
        #translator = str.maketrans('', '', clean_en_txt.punctuations_list)
-       #return text.translate(translator)
+       # return text.translate(translator)
 
     def remove_repeating_char(self, text):
-        #return re.sub(r'(.)\\2+', r'\1', text)
-        return re.sub(r'(.)\1+', r'\1\1',text)
+        # return re.sub(r'(.)\\2+', r'\1', text)
+        return re.sub(r'(.)\1+', r'\1\1', text)
+
     def label_stopwords(self, text):
         '''for word in clean_en_txt.first_person:
             text = text.replace(' ' + word + ' ', ' <first_person> ')
@@ -71,8 +72,8 @@ class clean_en_txt:
             text = text.replace(' ' + word + ' ', ' <pronoun> ')
         for word in clean_en_txt.negation:
             text = text.replace(' ' + word + ' ', ' <negation> ')
-        for word in clean_en_txt.stopwords_list: #or stopwordsssss ?? ###ALaa
-            text=  text.replace(' ' + word + ' ', ' ')
+        for word in clean_en_txt.stopwords_list:  # or stopwordsssss ?? ###ALaa
+            text = text.replace(' ' + word + ' ', ' ')
 
         # print(text)
         return text
@@ -98,24 +99,24 @@ class clean_en_txt:
 
     def label_URLs(self, text):
         return re.sub(u'https?:\/\/[^\s-]*', '<url>'
-                                             '', text, flags=re.MULTILINE) ### ALAA : <url>
+                                             '', text, flags=re.MULTILINE)  # ALAA : <url>
 
     def tokenize(self, text):
         stemmer = SStemmer()
 
-        #text = self.remove_punctuations(text) #### ALAA : if punctuations are removed first>> does not recognize a URL
+        # text = self.remove_punctuations(text) #### ALAA : if punctuations are removed first>> does not recognize a URL
 
         text = self.delete_hashtag(text)
 
         ''' list_emo = emojis.get(text)
         for emoji in list_emo:
             text = text.replace(emoji, '') '''
-        text = text.lower()  ##ALAAA : lower case all the words
+        text = text.lower()  # ALAAA : lower case all the words
         text = self.label_URLs(text)
         text = self.label_user_mentions(text)
         text = self.remove_repeating_char(text)
         text = self.label_stopwords(text)
-        text = self.remove_punctuations(text)  ##Alaa
+        text = self.remove_punctuations(text)  # Alaa
 
         tokenizer = TweetTokenizer()
         tokens = tokenizer.tokenize(text)
@@ -127,6 +128,3 @@ class clean_en_txt:
                 stemmed_tokens.append(stemmer.stem(token.lower()))
         return tokens
         # return [stemmer.stem(x) for x in text.split() if stemmer.stem(x) not in clean_en_txt.stopwords_list]
-
-
-
