@@ -139,8 +139,6 @@ def predict(input_path,  output_path, verbosity_level=1):
         print('--------------- construction of features for the bot classifier ------------------')
         i = 0
         for author in Bots:
-            print(i)
-            print(bot_features_test[i])
             prediction_author = clf_bot.predict_proba([bot_features_test[i]])
 
             if prediction_author[0][1] >= 0.5:
