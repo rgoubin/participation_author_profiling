@@ -171,10 +171,10 @@ def predict(input_path,  output_path, verbosity_level=1):
             clf_label = pickle.load(input_file)
         with open(options['text_clf_path_meta'] + '/' + lang + '/meta-classifier.p', "rb") as input_file:
             clf_meta = pickle.load(input_file)
-        with open(options['text_clf_path_user2vec'] + '/' + lang + '/user2vec-classifier.p', "rb") as input_file:
-            clf_user2vec = pickle.load(input_file)
+        '''with open(options['text_clf_path_user2vec'] + '/' + lang + '/user2vec-classifier.p', "rb") as input_file:
+            clf_user2vec = pickle.load(input_file)'''
 
-        prediction_user2vec = dict()
+        '''prediction_user2vec = dict()
         if lang == 'en':
 
             print('Load user2vec model')
@@ -248,7 +248,7 @@ def predict(input_path,  output_path, verbosity_level=1):
                     final_vector = np.true_divide(
                         final_vector, len(current_user_vectors))
                     prediction_user2vec[author['id']] = clf_user2vec.predict_proba([final_vector])[
-                        0]
+                        0]'''
 
         import text_prediction
         predictions_test_tfidf = text_prediction.predict(
@@ -281,9 +281,9 @@ def predict(input_path,  output_path, verbosity_level=1):
             toAppend.append(predictions_test_tfidf[author['id']][1])
             toAppend.append(prediction_author[0][0])
             toAppend.append(prediction_author[0][1])
-            if lang == 'en':
+            '''if lang == 'en':
                 toAppend.append(prediction_user2vec[author['id']][0])
-                toAppend.append(prediction_user2vec[author['id']][1])
+                toAppend.append(prediction_user2vec[author['id']][1])'''
 
             X_test[author['id']] = toAppend
         X_test_casted = dict()
