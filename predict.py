@@ -133,13 +133,6 @@ def predict(input_path,  output_path, verbosity_level=1):
         print('--------------- feature extractor ------------------')
         bot_features_test = generic.all_generic_bot_features(Bots, lang)
 
-        '''specific_features_test = []
-        if lang == 'en':
-            specific_features_test = specific_en.get_all_specific_features(
-                Bots)
-        if lang == 'es':
-            specific_features_test = specific_es.get_all_specific_features(
-                Bots)'''
         print('--------------- feature extracted ------------------')
         bot_predictions_label = dict()
 
@@ -173,84 +166,6 @@ def predict(input_path,  output_path, verbosity_level=1):
             clf_label = pickle.load(input_file)
         with open(options['text_clf_path_meta'] + '/' + lang + '/meta-classifier.p', "rb") as input_file:
             clf_meta = pickle.load(input_file)
-        with open(options['text_clf_path_user2vec'] + '/' + lang + '/user2vec-classifier.p', "rb") as input_file:
-            clf_user2vec = pickle.load(input_file)
-
-        prediction_user2vec = dict()
-        if lang == 'en':
-
-            print('Load user2vec model')
-            ############################################################
-            # ALAA : Load model into word2vec_model
-
-            # load fastText word vectors
-            # --------------------------------
-
-            word2vec_fname = "/home/goubin19/cc.en.300.vec"  # modify the directory
-            words_vectors_data = load_vectors(word2vec_fname)
-            ############################################################
-            print('Model loaded')
-
-            # Compute tweet2vec
-            i = 0
-            global_words_count = 0
-            global_found_words = 0
-
-            for author in Humans:
-                print("user2vec: " + str(i) + '/' + str(len(Humans)))
-                current_user_vectors = []
-
-                ######################################
-                # ALAA : Compute for each tweet of one user and add vectors into current_user_vectors
-                for tweet in author['tweets']:
-                   # clean the tweet
-                    if (lang == "en"):
-                        clean_tweet_tokens = clean_en_txt_word2vec().tokenize(tweet)
-                    elif (lang == "es"):
-                        clean_tweet_tokens = clean_es_txt().tokenize(tweet)
-                    else:
-                        print("language", lang, "has not been initialized yet")
-
-                    # if weighted tweet2vec:
-                    # author_word_tfIdf = user_word_tfIdf(x, authors)
-                    # tweet_vector, words_count, vectorized_words_count = tfIdf_weighted_tweet2vec(words_vectors_data,
-                    #                                                                             clean_tweet_tokens,
-                    #                                                                            author_word_tfIdf)
-
-                    # else
-                    tweet_vector, words_count, vectorized_words_count = tweet2vec(words_vectors_data,
-                                                                                  clean_tweet_tokens)
-
-                    #print("tweet vector:", tweet_vector)
-                    # exclude zero vectors:
-                    if(np.count_nonzero(tweet_vector) != 0):
-
-                        current_user_vectors.append(tweet_vector)
-
-                    global_found_words += vectorized_words_count
-                    global_words_count += words_count
-
-                    #print("curr global_words_count", global_words_count)
-
-                    #print("curr global_found_words", global_found_words)
-
-                ratio = (float(global_found_words)) / global_words_count
-                #print("global ratio of founded words is", ratio)
-
-                ######################################
-                ######################################
-
-                if len(current_user_vectors) == 0:
-                    prediction_user2vec[author['id']] = [0.5, 0.5]
-                else:
-                    final_vector = [0]*300
-                    for current_vector in current_user_vectors:
-                        final_vector = list(
-                            map(operator.add, final_vector, current_vector))
-                    final_vector = np.true_divide(
-                        final_vector, len(current_user_vectors))
-                    prediction_user2vec[author['id']] = clf_user2vec.predict_proba([final_vector])[
-                        0]
 
         import text_prediction
         predictions_test_tfidf = text_prediction.predict(
@@ -263,7 +178,7 @@ def predict(input_path,  output_path, verbosity_level=1):
             specific_features_test = specific_en.get_all_specific_features(
                 Humans)
         if lang == 'es':
-            specific_features_test = specific_es.get_all_specific_features(
+            specific_features_test = specific_es.get_all_specific_features_label(
                 Humans)
         print('--------------- feature extracted ------------------')
         text_predictions_label = dict()
@@ -283,9 +198,9 @@ def predict(input_path,  output_path, verbosity_level=1):
             toAppend.append(predictions_test_tfidf[author['id']][1])
             toAppend.append(prediction_author[0][0])
             toAppend.append(prediction_author[0][1])
-            if lang == 'en':
+            '''if lang == 'en':
                 toAppend.append(prediction_user2vec[author['id']][0])
-                toAppend.append(prediction_user2vec[author['id']][1])
+                toAppend.append(prediction_user2vec[author['id']][1])'''
 
             X_test[author['id']] = toAppend
         X_test_casted = dict()
