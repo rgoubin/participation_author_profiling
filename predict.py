@@ -261,7 +261,7 @@ def predict(input_path,  output_path, verbosity_level=1):
             specific_features_test = specific_en.get_all_specific_features(
                 Humans)
         if lang == 'es':
-            specific_features_test = specific_es.get_all_specific_features(
+            specific_features_test = specific_es.get_all_specific_features_label(
                 Humans)
         print('--------------- feature extracted ------------------')
         text_predictions_label = dict()
