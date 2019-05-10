@@ -117,15 +117,15 @@ def predict(input_path,  output_path, verbosity_level=1):
         Bots = []
         Humans = []
         # TO DELETE
-        # Humans = Authors
+        Humans = Authors
 
-        Bots = Authors
+        #Bots = Authors
 
         # -----------------------------------------------------
         # ------ DETERMINING IF USERS ARE BOTS OR HUMANS ------
         # -----------------------------------------------------
 
-        print('Get bot classifier')
+        '''print('Get bot classifier')
         clf_bot = None
         with open(options['text_clf_path_bot'] + '/' + lang + '/bot-classifier.p', "rb") as input_file:
             clf_bot = pickle.load(input_file)
@@ -160,16 +160,18 @@ def predict(input_path,  output_path, verbosity_level=1):
         clf_meta = None
         clf_user2vec = None
         word2vec_model = None
+        
+
+        import text_prediction
+        predictions_test_tfidf = text_prediction.predict(
+            input_path, options['text_clf_path_tfidf'], languages=[lang])'''
+
+        print('--------------- feature extractor ------------------')
+
         with open(options['text_clf_path_label'] + '/' + lang + '/label-classifier.p', "rb") as input_file:
             clf_label = pickle.load(input_file)
         with open(options['text_clf_path_meta'] + '/' + lang + '/meta-classifier.p', "rb") as input_file:
             clf_meta = pickle.load(input_file)
-
-        import text_prediction
-        predictions_test_tfidf = text_prediction.predict(
-            input_path, options['text_clf_path_tfidf'], languages=[lang])
-
-        print('--------------- feature extractor ------------------')
         generic_features_test = generic.all_generic_features(Humans)
         specific_features_test = []
         if lang == 'en':
@@ -192,8 +194,8 @@ def predict(input_path,  output_path, verbosity_level=1):
             i = i + 1
 
             toAppend = []
-            toAppend.append(predictions_test_tfidf[author['id']][0])
-            toAppend.append(predictions_test_tfidf[author['id']][1])
+            # toAppend.append(predictions_test_tfidf[author['id']][0])
+            # toAppend.append(predictions_test_tfidf[author['id']][1])
             toAppend.append(prediction_author[0][0])
             toAppend.append(prediction_author[0][1])
             '''if lang == 'en':

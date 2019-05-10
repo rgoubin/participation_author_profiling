@@ -242,8 +242,11 @@ def all_generic_features(Authors):
     lower_re = re.compile(r'[a-z]')
 
     features = []
-
+    i = 0
+    print("generic features")
     for author in Authors:
+        print(i)
+        i = i + 1
         features_user = []
         number_of_words = 0
         tweet_length = 0
