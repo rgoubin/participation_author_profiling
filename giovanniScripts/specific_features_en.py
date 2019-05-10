@@ -126,7 +126,7 @@ def get_all_specific_features(Authors):
 
 def get_all_specific_features_label(Authors):
     features = []
-    print("specific features")
+    print("specific features en")
     i = 0
     for author in Authors:
         print(i)

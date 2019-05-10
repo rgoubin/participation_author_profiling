@@ -94,7 +94,7 @@ def predict(input_path,  output_path, verbosity_level=1):
     '''
 
     for lang in ['es', 'en']:
-    # for lang in ['es']:
+        # for lang in ['es']:
 
         input_dir = join(input_path, lang)
         output_dir = join(output_path, lang)
@@ -187,6 +187,7 @@ def predict(input_path,  output_path, verbosity_level=1):
         X_test = dict()
         i = 0
         for author in Humans:
+            print(i)
             features = generic_features_test[i] + specific_features_test[i]
             prediction_author = clf_label.predict_proba([features])
             text_predictions_label[author['id']] = prediction_author[0]
