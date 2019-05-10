@@ -494,7 +494,7 @@ def all_generic_bot_features(Authors, lang):
 
         if lang == 'es':
             sentiment = sentiment_analysis.analyse_author(author)
-            features.extend(sentiment)
+            features_user.extend(sentiment)
 
         features.append(features_user)
 
