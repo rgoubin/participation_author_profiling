@@ -118,6 +118,19 @@ def hashtags_2(Authors):
 
     return features
 
+# Return a list of the features of all the users
+def hashtags_3(author):
+    # https://gist.github.com/mahmoud/237eb20108b5805aed5f
+    hashtag_re = re.compile("(?:^|\s)[##]{1}(\w+)", re.UNICODE)
+
+    features = []
+    hashtags = 0
+    for tweet in author['tweets']:
+        list_hashtags = hashtag_re.findall(tweet)
+        hashtags = hashtags + len(list_hashtags)
+    features.append(hashtags)
+
+    return features
 
 def user_mentions_1(Authors):
     # https://gist.github.com/mahmoud/237eb20108b5805aed5f
@@ -148,16 +161,51 @@ def user_mentions_2(Authors):
 
     return features
 
+def user_mentions_3(author):
+    # https://gist.github.com/mahmoud/237eb20108b5805aed5f
+    mention_re = re.compile(
+        "(?:^|\s)[@@]{1}([^\s#<>[\]|{}]+)", re.UNICODE)
+
+    features = []
+    user_mentions = 0
+    for tweet in author['tweets']:
+        list_mentions = mention_re.findall(tweet)
+        user_mentions = user_mentions + len(list_mentions)
+    features.append(user_mentions)
+
+    return features
 
 def emoticon_ratio(author):
     tweet_having_emoticon = 0
     emoticon_number = 0
     for tweet in author['tweets']:
+        # emoticon_number = len(re.findall(u'[\U0001f600-\U0001f650]', tweet))
         emoticon_number = emojis.count(tweet)
         if emoticon_number > 0:
             tweet_having_emoticon += 1
     return tweet_having_emoticon/len(author['tweets'])
 
+def emoticon_number_avg(author):
+    emoticon_number = 0
+    for tweet in author['tweets']:
+        # emoticon_number = len(re.findall(u'[\U0001f600-\U0001f650]', tweet))
+        emoticon_number += emojis.count(tweet)
+    return emoticon_number/len(author['tweets'])
+
+def emoticon_number_sd(author):
+    emoticon_number_list = []
+    for tweet in author['tweets']:
+        # emoticon_number = len(re.findall(u'[\U0001f600-\U0001f650]', tweet))
+        emoticon_number_list.append(emojis.count(tweet))
+    sd = stats.stdev(emoticon_number_list)
+    return sd
+
+def all_emoticon_features(author):
+    all_features = []
+    all_features.append(emoticon_ratio(author))
+    all_features.append(emoticon_number_avg(author))
+    all_features.append(emoticon_number_sd(author))
+    return all_features
 
 def word_count(text):
     word_counter = 0
@@ -421,21 +469,32 @@ def all_generic_features_csv(Authors):
     return features
 
 
-def all_generic_bot_features(Authors):
+def all_generic_bot_features(Authors, lang):
     import giovanniScripts.pos_tag_features as pos_tag_features
+    import giovanniScripts.sentiment_features as sentiment_features
+
     features = []
     pos_tag = pos_tag_features.POS_taging()
+    if lang == 'es':
+        sentiment_analysis = sentiment_features.Sentiment_analysis()
 
     for author in Authors:
+
         features_user = []
 
-        emoticon_ratio_feature = emoticon_ratio(author)
+        emoticon_features = all_emoticon_features(author)
         pos_tag_all_features = pos_tag.pos_tag_all_features(author)  # list
         aggregated_word_count_and_entropy = word_all_features(author)  # list
 
-        features_user.append(emoticon_ratio_feature)
         features_user.extend(pos_tag_all_features)
         features_user.extend(aggregated_word_count_and_entropy)
+        features_user.extend(emoticon_features)
+        features_user.extend(hashtags_3(author))
+        features_user.extend(user_mentions_3(author))
+
+        if lang == 'es':
+            sentiment = sentiment_analysis.analyse_author(author)
+            features.extend(sentiment)
 
         features.append(features_user)
 

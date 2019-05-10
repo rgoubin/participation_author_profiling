@@ -93,8 +93,8 @@ def predict(input_path,  output_path, verbosity_level=1):
         NB. Create outputPath directory before using this function
     '''
 
-    for lang in ['en', 'es']:
-        # for lang in ['es']:
+    for lang in ['es', 'en']:
+    # for lang in ['es']:
 
         input_dir = join(input_path, lang)
         output_dir = join(output_path, lang)
@@ -131,7 +131,7 @@ def predict(input_path,  output_path, verbosity_level=1):
             clf_bot = pickle.load(input_file)
 
         print('--------------- feature extractor ------------------')
-        bot_features_test = generic.all_generic_bot_features(Bots)
+        bot_features_test = generic.all_generic_bot_features(Bots, lang)
 
         '''specific_features_test = []
         if lang == 'en':
@@ -146,6 +146,8 @@ def predict(input_path,  output_path, verbosity_level=1):
         print('--------------- construction of features for the bot classifier ------------------')
         i = 0
         for author in Bots:
+            print(i)
+            print(bot_features_test[i])
             prediction_author = clf_bot.predict_proba([bot_features_test[i]])
 
             if prediction_author[0][1] >= 0.5:
