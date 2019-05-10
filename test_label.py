@@ -106,7 +106,7 @@ def predict(input_path,  output_path, lang="es", verbosity_level=1):
     if lang == 'es':
         specific_features_test = specific_es.get_all_specific_features_label(
             Authors)
-
+    i = 0
     for author in Authors:
         print(i)
         features = generic_features_test[i] + specific_features_test[i]
