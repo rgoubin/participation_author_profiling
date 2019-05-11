@@ -93,8 +93,8 @@ def predict(input_path,  output_path, verbosity_level=1):
         NB. Create outputPath directory before using this function
     '''
 
-    for lang in ['es', 'en']:
-    # for lang in ['es']:
+    #for lang in ['es', 'en']:
+    for lang in ['en']:
 
         input_dir = join(input_path, lang)
         output_dir = join(output_path, lang)
@@ -139,6 +139,8 @@ def predict(input_path,  output_path, verbosity_level=1):
         print('--------------- construction of features for the bot classifier ------------------')
         i = 0
         for author in Bots:
+            print(i)
+            print(bot_features_test[i])
             prediction_author = clf_bot.predict_proba([bot_features_test[i]])
 
             if prediction_author[0][1] >= 0.5:
