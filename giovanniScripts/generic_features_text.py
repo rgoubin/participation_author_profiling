@@ -472,7 +472,7 @@ def all_generic_features_csv(Authors):
 def all_generic_bot_features(Authors, lang):
     import giovanniScripts.pos_tag_features as pos_tag_features
     import giovanniScripts.sentiment_features as sentiment_features
-
+    i=0
     features = []
     pos_tag = pos_tag_features.POS_taging()
     if lang == 'es':
@@ -497,5 +497,7 @@ def all_generic_bot_features(Authors, lang):
             features_user.extend(sentiment)
 
         features.append(features_user)
+        i+=1
+        print(i)
 
     return features
