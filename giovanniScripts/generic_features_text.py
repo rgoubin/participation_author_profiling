@@ -290,8 +290,11 @@ def all_generic_features(Authors):
     lower_re = re.compile(r'[a-z]')
 
     features = []
-
+    i = 0
+    print("generic features")
     for author in Authors:
+        print(i)
+        i = i + 1
         features_user = []
         number_of_words = 0
         tweet_length = 0
@@ -477,8 +480,11 @@ def all_generic_bot_features(Authors, lang):
     pos_tag = pos_tag_features.POS_taging()
     if lang == 'es':
         sentiment_analysis = sentiment_features.Sentiment_analysis()
-
+    print("generic features bot")
+    i = 0
     for author in Authors:
+        print(i)
+        i = i + 1
 
         features_user = []
 

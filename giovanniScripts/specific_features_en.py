@@ -126,7 +126,11 @@ def get_all_specific_features(Authors):
 
 def get_all_specific_features_label(Authors):
     features = []
+    print("specific features en")
+    i = 0
     for author in Authors:
+        print(i)
+        i = i + 1
         features_user = []
         emoji = 0
         first_person = 0

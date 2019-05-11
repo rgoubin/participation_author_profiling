@@ -93,8 +93,13 @@ def predict(input_path,  output_path, verbosity_level=1):
         NB. Create outputPath directory before using this function
     '''
 
+<<<<<<< HEAD
     #for lang in ['es', 'en']:
     for lang in ['en']:
+=======
+    for lang in ['es', 'en']:
+        # for lang in ['es']:
+>>>>>>> 49bdb0f52c494d19c01ae299c2e2ae66dabeea70
 
         input_dir = join(input_path, lang)
         output_dir = join(output_path, lang)
@@ -117,7 +122,7 @@ def predict(input_path,  output_path, verbosity_level=1):
         Bots = []
         Humans = []
         # TO DELETE
-        # Humans = Authors
+        #Humans = Authors
 
         Bots = Authors
 
@@ -162,16 +167,17 @@ def predict(input_path,  output_path, verbosity_level=1):
         clf_meta = None
         clf_user2vec = None
         word2vec_model = None
-        with open(options['text_clf_path_label'] + '/' + lang + '/label-classifier.p', "rb") as input_file:
-            clf_label = pickle.load(input_file)
-        with open(options['text_clf_path_meta'] + '/' + lang + '/meta-classifier.p', "rb") as input_file:
-            clf_meta = pickle.load(input_file)
 
         import text_prediction
         predictions_test_tfidf = text_prediction.predict(
             input_path, options['text_clf_path_tfidf'], languages=[lang])
 
         print('--------------- feature extractor ------------------')
+
+        with open(options['text_clf_path_label'] + '/' + lang + '/label-classifier.p', "rb") as input_file:
+            clf_label = pickle.load(input_file)
+        with open(options['text_clf_path_meta'] + '/' + lang + '/meta-classifier.p', "rb") as input_file:
+            clf_meta = pickle.load(input_file)
         generic_features_test = generic.all_generic_features(Humans)
         specific_features_test = []
         if lang == 'en':
@@ -187,6 +193,7 @@ def predict(input_path,  output_path, verbosity_level=1):
         X_test = dict()
         i = 0
         for author in Humans:
+            print(i)
             features = generic_features_test[i] + specific_features_test[i]
             prediction_author = clf_label.predict_proba([features])
             text_predictions_label[author['id']] = prediction_author[0]
