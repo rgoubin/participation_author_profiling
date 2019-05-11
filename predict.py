@@ -93,13 +93,8 @@ def predict(input_path,  output_path, verbosity_level=1):
         NB. Create outputPath directory before using this function
     '''
 
-<<<<<<< HEAD
     #for lang in ['es', 'en']:
     for lang in ['en']:
-=======
-    for lang in ['es', 'en']:
-        # for lang in ['es']:
->>>>>>> 49bdb0f52c494d19c01ae299c2e2ae66dabeea70
 
         input_dir = join(input_path, lang)
         output_dir = join(output_path, lang)
